@@ -12,9 +12,6 @@
       "backgroundColor": "#ffffff"
     },
     "scheme": "myapp",
-    "web": {
-      "bundler": "metro"
-    },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -28,6 +25,7 @@
       }
     },
     "web": {
+      "bundler": "metro",
       "favicon": "./assets/favicon.png"
     }
   }
