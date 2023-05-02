@@ -50,10 +50,10 @@ import {datesMatch, formatDate, getDate} from "../lib/date";
 // }
 
 const getAppointmentSlots = async <Params>(params: Params[]): Promise<GetAppointmentsResponse[] | ErrorResponse> => {
-    return requests.get<Params, GetAppointmentsResponse>(`${CONFIG.url}/services/${CONFIG.appointmentsServiceId}/slots`, params);
+    return requests.get<Params, GetAppointmentsResponse[]>(`${CONFIG.url}/services/${CONFIG.appointmentsServiceId}/slots`, params);
 };
 
-const bookAppointment = async(data: PostBookingFormData): Promise<PostBookingResponse[] | ErrorResponse> => {
+const bookAppointment = async(data: PostBookingFormData): Promise<PostBookingResponse | ErrorResponse> => {
     return requests.post<PostBookingResponse>(`${CONFIG.url}/bookings`, {
         booking: {
             ...data.booking,

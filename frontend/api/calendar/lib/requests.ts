@@ -10,7 +10,7 @@ const combineParams = <Params>(params: Params[]): string => {
 };
 
 export const requests = {
-    async get<Params, Response>(url: string, params: Params[]): Promise<Response[] | ErrorResponse> {
+    async get<Params, Response>(url: string, params: Params[]): Promise<Response | ErrorResponse> {
         const response = await fetch(`${url}?${combineParams<Params>(params)}`, {
             method: 'GET',
             headers: {
@@ -21,7 +21,7 @@ export const requests = {
         });
         return response.json();
     },
-    async post<Response>(url: string, data: PostBookingRequest): Promise<Response[] | ErrorResponse> {
+    async post<Response>(url: string, data: PostBookingRequest): Promise<Response | ErrorResponse> {
         const response = await fetch(`${url}`, {
             method: 'POST',
             headers: {
