@@ -1,0 +1,61 @@
+Plan
+
+- Check response from request
+- Write a function that gets all the slot times
+- 
+
+
+Objectives 30/04/2023
+- Get all available appointments
+	- Get all slot times
+	- Get all current (active) bookings
+	- Go through all the slot times and mark which ones are available or not. Statuses can be: FREE or BOOKED
+	- If it is BOOKED show BOOKED 
+	- If it is FREE
+		- Show the time range/slot
+		- Show BOOK NOW button
+
+
+Objectives 30/04/2023
+- Add react-native-paper library for UI
+- Add react-native calendar package
+	- Add the timeline component
+- Loop over marked appointment slots and display a timeline card with:
+	- Service (Counselling)
+	- Resource (Pastor Austin)
+	- Time (60 min)
+	- Start time - End time
+	- On the right side:
+		- a BOOK NOW button if slot is available
+		- otherwise a greyed out disabled BOOKED button
+- After clicking on BOOK NOW
+	- A Confirmation dialog will pop asking them are they sure they want to book a counselling sesh with Pastor Austin at start time - end 	time in bold
+	- After clicking yes a loading spinner/screen will appear (they won't be able to do anything)
+	- After everything, if it is successful then tell them to click say to the confirmation email that will be sent to <EMAIL>
+
+
+Service
+- Make endpoint to get counselling service
+
+Resources
+- Make endpoint to get counselling resource
+
+
+Objectives 02/05/2023
+- Style booking form so it's more spaced out and clearer (done)
+- Use more simple styling for the appointment cards so native scrolls work
+- Add loading screen (done)
+- Add successfully booked screen (done)
+- Refresh slots after successfully booking (done)
+- Only allow marked dates to be accessible. Make all other dates disabled (done)
+	- Fix list of marked dates. Add all the remaining dates from the first available date to the last
+
+
+Steps
+- Take array of dates
+- Take the first and last date
+- Starting from the first date, recursively go over each date and add 1 to the day
+- Check if there is a date in the array already
+- If there is a date, skip and go to the next date
+- If there isn't a date add it to the array
+	- Add 1 to the date and repeat
