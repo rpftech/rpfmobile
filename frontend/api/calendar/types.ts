@@ -95,8 +95,20 @@ export interface PostBookingResponse {
             id: number;
             title: string;
         };
-    }
-}
+    };
+};
+
+export interface PostBookingInvalidParams {
+    'person.base'?: string[];
+    resource?: string[];
+    resource_id?: string[];
+    booked_from?: string[];
+    booked_to?: string[];
+    person?: string[];
+    person_attributes?: {
+        base: string[]
+    };
+};
 
 export interface GetFutureDataParams {
     year: number;
@@ -122,3 +134,18 @@ export interface PostBookingRequest {
     }
     confirm: boolean
 };
+
+export interface PostBookingRequest {
+    booking: {
+        service_id: number;
+        booked_from: string;
+        booked_to: string;
+        person_attributes: {
+            name: string;
+        };
+        public_booking: boolean;
+    }
+    confirm: boolean
+};
+
+export type PostBookingErrorResponse = PostBookingInvalidParams | ErrorResponse;

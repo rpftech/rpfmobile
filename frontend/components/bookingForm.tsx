@@ -26,7 +26,7 @@ const BookingForm = ({ visible, setVisible, hideModal, bookingForm, setBookingFo
             ...state,
             loading: true,
         }));
-       await Calendar.Appointments.bookAppointment({
+        const result = await Calendar.Appointments.bookAppointment({
             booking: {
                 booked_from: bookingForm.startTime,
                 booked_to: bookingForm.endTime,
@@ -35,12 +35,20 @@ const BookingForm = ({ visible, setVisible, hideModal, bookingForm, setBookingFo
                 }
             }
         });
-        setBookAppointmentStatus(state => ({
-            ...state,
-            loading: false,
-            loaded: true
-        }));
-    }, []);
+        if('booking' in result) {
+            setBookAppointmentStatus(state => ({
+                ...state,
+                loading: false,
+                loaded: true
+            }));
+        } else {
+            setBookAppointmentStatus(state => ({
+                ...state,
+                error: true
+            }));
+        }
+
+    }, [bookingForm]);
 
     const handlePostBookHandling = useCallback(async() => {
         setBookingForm({
@@ -63,7 +71,7 @@ const BookingForm = ({ visible, setVisible, hideModal, bookingForm, setBookingFo
             ...state,
             [inputFieldKey]: inputFieldValue
         }))
-    }, []);
+    }, [bookingForm.email, bookingForm.fullName]);
 
     return (
         <Portal>

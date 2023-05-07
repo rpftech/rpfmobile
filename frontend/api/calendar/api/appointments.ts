@@ -4,7 +4,7 @@ import {
     AppointmentSlotParams, BookingParams,
     ErrorResponse,
     GetAppointmentsResponse,
-    MarkedAppointmentSlot,
+    MarkedAppointmentSlot, PostBookingErrorResponse,
     PostBookingFormData,
     PostBookingResponse
 } from "../types";
@@ -53,7 +53,7 @@ const getAppointmentSlots = async <Params>(params: Params[]): Promise<GetAppoint
     return requests.get<Params, GetAppointmentsResponse[]>(`${CONFIG.url}/services/${CONFIG.appointmentsServiceId}/slots`, params);
 };
 
-const bookAppointment = async(data: PostBookingFormData): Promise<PostBookingResponse | ErrorResponse> => {
+const bookAppointment = async(data: PostBookingFormData): Promise<PostBookingResponse | PostBookingErrorResponse> => {
     return requests.post<PostBookingResponse>(`${CONFIG.url}/bookings`, {
         booking: {
             ...data.booking,

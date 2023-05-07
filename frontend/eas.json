@@ -1,0 +1,30 @@
+{
+  "cli": {
+    "version": ">= 3.11.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_USE_TYPED_ROUTER": "true"
+      }
+    },
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_USE_TYPED_ROUTER": "true"
+      }
+    },
+    "preview2": {
+      "distribution": "internal",
+      "developmentClient": true
+    },
+    "production": {}
+  },
+  "submit": {
+    "production": {}
+  }
+}
