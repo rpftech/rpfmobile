@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useMemo, useCallback} from "react";
 import {Button, Card, List, Text} from "react-native-paper";
 import {AvailableAppointmentSlot} from "../api/calendar/types";
 import {BookingFormState} from "../app/index";
@@ -10,6 +10,19 @@ interface ItemProps {
 }
 
 const AppointmentSlotCards = ({ item, setBookingForm, showModal }: ItemProps) => {
+    const handleBooking = useCallback(() => {
+        showModal();
+        setBookingForm(state => ({
+            ...state,
+            startTime: item.timestamp,
+            endTime: item.timestamp_end
+        }))
+    }, []);
+
+    const formatTimeRange = useMemo(() =>
+        `${item.formatted_timestamp.split(', ')[2]} - ${item.formatted_timestamp_end.split(', ')[2]}`
+        , []);
+
     return (
         <List.Section>
             <Card>
@@ -18,20 +31,13 @@ const AppointmentSlotCards = ({ item, setBookingForm, showModal }: ItemProps) =>
                     <Text>Counselling</Text>
                     <Text>Pastor Austin</Text>
                     <Text>60min</Text>
-                    <Text>{item.formatted_timestamp.split(', ')[2]} - {item.formatted_timestamp_end.split(', ')[2]}</Text>
+                    <Text>{formatTimeRange}</Text>
                 </Card.Content>
                 <Card.Actions>
                     {item.available
                         ? <Button
                             mode='contained'
-                            onPress={() => {
-                                showModal();
-                                setBookingForm(state => ({
-                                    ...state,
-                                    startTime: item.timestamp,
-                                    endTime: item.timestamp_end
-                                }))
-                            }}
+                            onPress={handleBooking}
                         >BOOK NOW</Button>
                         : <Button disabled>BOOKED</Button>}
                 </Card.Actions>
@@ -40,4 +46,4 @@ const AppointmentSlotCards = ({ item, setBookingForm, showModal }: ItemProps) =>
     )
 };
 
-export default AppointmentSlotCards;
+export default React.memo(AppointmentSlotCards);

@@ -1,7 +1,7 @@
 import {ActivityIndicator, Button, MD2Colors, Modal, Portal, Text, TextInput} from "react-native-paper";
 import {StyleSheet, View} from "react-native";
-import React, {useState} from "react";
-import {AvailableAppointmentSlotsResultsState, BookingFormState} from "../app/index";
+import React, {useCallback, useState} from "react";
+import {BookingFormState} from "../app/index";
 import Calendar from "../api/calendar";
 import {formatDate} from "../api/calendar/lib/date";
 
@@ -19,9 +19,9 @@ const BookingForm = ({ visible, setVisible, hideModal, bookingForm, setBookingFo
         loading: false,
         loaded: false,
         error: false
-    })
+    });
 
-    const bookAppointmentHandler = async() => {
+    const bookAppointmentHandler = useCallback(async() => {
         setBookAppointmentStatus(state => ({
             ...state,
             loading: true,
@@ -40,10 +40,9 @@ const BookingForm = ({ visible, setVisible, hideModal, bookingForm, setBookingFo
             loading: false,
             loaded: true
         }));
-    };
+    }, []);
 
-    const handlePostBookHandling = async() => {
-        await refreshAppointmentSlots();
+    const handlePostBookHandling = useCallback(async() => {
         setBookingForm({
             fullName: '',
             email: '',
@@ -51,18 +50,30 @@ const BookingForm = ({ visible, setVisible, hideModal, bookingForm, setBookingFo
             endTime: ''
         });
         setVisible(false);
-    };
+        await refreshAppointmentSlots();
+    }, []);
 
-    const onModalHide = () => {
+    const onModalHide = useCallback(async() => {
+        if (bookAppointmentStatus.loaded) await handlePostBookHandling();
         hideModal();
+    }, []);
 
-    }
+    const handleInput = useCallback((inputFieldKey: string, inputFieldValue: string) => {
+        setBookingForm(state => ({
+            ...state,
+            [inputFieldKey]: inputFieldValue
+        }))
+    }, []);
 
     return (
         <Portal>
-            <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.containerStyle}>
+            <Modal visible={visible} onDismiss={onModalHide} contentContainerStyle={styles.containerStyle}>
             {bookAppointmentStatus.loading
-                ? <ActivityIndicator size='large' animating={true} color={MD2Colors.red800} />
+                ?
+                <View style={styles.loaderContainer}>
+                    <Text variant='titleMedium'>Saving appointment... Please do not leave this page.</Text>
+                    <ActivityIndicator size='large' animating={true} color={MD2Colors.red800} />
+                </View>
                 : bookAppointmentStatus.loaded
                     ?
                     <View style={styles.appointmentSuccessContainer}>
@@ -82,20 +93,14 @@ const BookingForm = ({ visible, setVisible, hideModal, bookingForm, setBookingFo
                             label='Full name'
                             placeholder='Enter your full name'
                             value={bookingForm.fullName}
-                            onChangeText={fullName => setBookingForm(state => ({
-                            ...state,
-                            fullName: fullName
-                        }))}
+                            onChangeText={fullNameValue => handleInput('fullName', fullNameValue)}
                         />
                         <TextInput
                             style={styles.bookingFormInput}
                             label='Email'
                             placeholder='Enter your email'
                             value={bookingForm.email}
-                            onChangeText={email => setBookingForm(state => ({
-                            ...state,
-                            email: email
-                        }))}
+                            onChangeText={emailValue => handleInput('email', emailValue)}
                         />
                         <Button mode='contained' onPress={bookAppointmentHandler}>Book now</Button>
                     </View>
@@ -110,6 +115,12 @@ const styles = StyleSheet.create({
         height: '75%',
         backgroundColor: 'white',
         padding: 20
+    },
+    loaderContainer: {
+        flex: 1,
+        gap: 30,
+        justifyContent: "center",
+        alignItems: "center"
     },
     bookingFormContainer: {
         flex: 1,
@@ -133,4 +144,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default BookingForm;
+export default React.memo(BookingForm);

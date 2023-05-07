@@ -1,4 +1,4 @@
-import {View, StyleSheet, GestureResponderEvent} from "react-native";
+import {View, StyleSheet} from "react-native";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 
 import {ExpandableCalendar, CalendarProvider, AgendaList} from "react-native-calendars";
@@ -44,10 +44,10 @@ const Index = () => {
         startTime: '',
         endTime: ''
     })
-    const showModal = () => setVisible(true);
-    const hideModal = () => setVisible(false);
+    const showModal = useCallback(() => setVisible(true), []);
+    const hideModal = useCallback(() => setVisible(false), []);
 
-    const fetchAvailableAppointmentSlots = async () => {
+    const fetchAvailableAppointmentSlots = useCallback(async () => {
         setAvailableAppointmentSlotsResults(state => ({
             ...state,
             loading: true,
@@ -62,7 +62,7 @@ const Index = () => {
         }));
         // console.log(results.slice(0, 100))
         // cache.set(availableAppointmentSlotsResults.data, results);
-    };
+    }, []);
 
     const cache = new Map();
     useEffect(() => {
@@ -87,6 +87,8 @@ const Index = () => {
         // }
     }, [availableAppointmentSlotsResults.data]);
 
+    // console.log(availableAppointmentSlotsResults.data.length)
+
 
     const renderAppointmentSlotCard = useCallback(({ item }: ItemProps) => {
         return (
@@ -102,6 +104,7 @@ const Index = () => {
             {availableAppointmentSlotsResults.loading || !availableAppointmentSlotsResults.data.length
                 ?
                 <View style={styles.loaderContainer}>
+                    <Text variant='titleMedium'>Loading appointments...</Text>
                     <ActivityIndicator size='large' animating={true} color={MD2Colors.red800} />
                 </View>
                 :
@@ -129,7 +132,6 @@ const Index = () => {
                             sectionStyle={styles.view}
                             sections={availableAppointmentSlotsResults.data}
                             renderItem={renderAppointmentSlotCard}
-                            keyExtractor={(item, index) => index.toString()}
                         />
                     </CalendarProvider>
                 </View>
@@ -145,6 +147,7 @@ const styles = StyleSheet.create({
     },
     loaderContainer: {
         flex: 1,
+        gap: 30,
         justifyContent: "center",
         alignItems: "center"
     },
