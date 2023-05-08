@@ -25,7 +25,8 @@
     "react-native-web": "~0.18.10",
     "typescript": "^4.9.4",
     "expo-dev-client": "~2.2.1",
-    "react-native-gesture-handler": "~2.9.0"
+    "react-native-gesture-handler": "~2.9.0",
+    "expo-splash-screen": "~0.18.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

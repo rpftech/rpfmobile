@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "frontend",
-    "slug": "frontend",
+    "name": "Redeemed Pillar of Fire",
+    "slug": "redeemed-pillar-of-fire",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/rpf-logo-anime.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "image": "./assets/rpf-logo-anime.png",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "scheme": "myapp",
@@ -20,10 +20,10 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/rpf-logo-anime-adaptive.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "rpfmobile.com"
+      "package": "rpfmobile"
     },
     "web": {
       "bundler": "metro",
