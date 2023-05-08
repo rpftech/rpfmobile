@@ -1,7 +1,7 @@
 import React, {useMemo, useCallback} from "react";
 import {Button, Card, List, Text} from "react-native-paper";
-import {AvailableAppointmentSlot} from "../api/calendar/types";
-import {BookingFormState} from "../app/index";
+import {AvailableAppointmentSlot} from "../../api/calendar/types";
+import {BookingFormState} from "../../app";
 
 interface ItemProps {
     item: AvailableAppointmentSlot;
@@ -9,7 +9,7 @@ interface ItemProps {
     setBookingForm: React.Dispatch<React.SetStateAction<BookingFormState>>;
 }
 
-const AppointmentSlotCards = ({ item, setBookingForm, showModal }: ItemProps) => {
+const Index = ({ item, setBookingForm, showModal }: ItemProps) => {
     const handleBooking = useCallback(() => {
         showModal();
         setBookingForm(state => ({
@@ -46,4 +46,4 @@ const AppointmentSlotCards = ({ item, setBookingForm, showModal }: ItemProps) =>
     )
 };
 
-export default React.memo(AppointmentSlotCards);
+export default React.memo(Index);
