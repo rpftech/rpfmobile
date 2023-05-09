@@ -13,7 +13,8 @@ const Header = () => {
                 name="index"
                 options={{
                     tabBarLabel: 'Counselling',
-                    headerShown: false
+                    title: 'Counselling'
+                    // headerShown: false
                 }}
             />
             {/*<Slot />*/}

@@ -20,31 +20,37 @@ export const datesMatch = (date1: string, date2: string): boolean => {
     return new Date(getDate(date1)).getTime() === new Date(getDate(date2)).getTime()
 };
 
-export const getDateTimeRange = (startDate: string, endDate: string, dates: string[], markedDates: MarkedDate = {}): MarkedDate => {
+export const getFutureDates = () => {
+
+}
+
+export const getDateTimeRange = (startDate: string, endDate: string, dates: string[], markedDates: MarkedDate[] = []): MarkedDate[] => {
     if(startDate === endDate) return markedDates;
     if(dates.includes(startDate)) {
         const startDateObj = new Date(startDate);
         startDateObj.setDate(startDateObj.getDate() + 1);
-        const editedMarkedDates = {
+        const editedMarkedDates = [
             ...markedDates,
-            [startDate]: {
-                marked: true
+            {
+                date: startDate,
+                disabled: false
             }
-        }
+        ];
         return getDateTimeRange(getDate(startDateObj.toISOString()), endDate, dates, editedMarkedDates);
     };
     const startDateObj = new Date(startDate);
-    const editedMarkedDates = {
+    const editedMarkedDates = [
         ...markedDates,
-        [getDate(startDateObj.toISOString())]: {
+        {
+            date: getDate(startDateObj.toISOString()),
             disabled: true
         }
-    }
+    ]
     startDateObj.setDate(startDateObj.getDate() + 1);
     return getDateTimeRange(getDate(startDateObj.toISOString()), endDate, dates, editedMarkedDates);
 }
 
-export const createDateTimeline = (availableAppointmentSlots: MarkedAppointmentSlot[]): MarkedDate => {
+export const createDateTimeline = (availableAppointmentSlots: MarkedAppointmentSlot[]): MarkedDate[] => {
     const startDate = getDate(new Date().toISOString());
     const endDate = availableAppointmentSlots.at(-1);
     const dates = availableAppointmentSlots.map(availableAppointmentSlot => availableAppointmentSlot.title);

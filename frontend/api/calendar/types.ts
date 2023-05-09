@@ -31,10 +31,8 @@ export interface MarkedAppointmentSlot {
 };
 
 export interface MarkedDate {
-    [key: string]: {
-        marked?: boolean;
-        disabled?: boolean;
-    }
+    date: string;
+    disabled: boolean;
 }
 
 export interface GetActiveBookingsData {
