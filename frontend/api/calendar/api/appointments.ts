@@ -9,45 +9,9 @@ import {
     PostBookingResponse
 } from "../types";
 import Bookings from "./bookings";
-import {datesMatch, formatDate, getDate} from "../lib/date";
+import {datesMatch, formatDate, getDate, getFutureDate} from "../lib/date";
 
-// const groupItemsByDate = (appointments: GetAppointmentsResponse[], noActiveBookings: boolean, activeBookings: any) => {
-//     return appointments.reduce<MarkedAppointmentSlot[]>((allAppointments, currAppointment) => {
-//         const currAppointmentDate = new Date(currAppointment.slot.timestamp).toISOString().split('T')[0];
-//         const slotAvailable = noActiveBookings ? true : !activeBookings.some(
-//             activeBooking => datesMatch(activeBooking.booking.booked_from, currAppointment.slot.timestamp)
-//         );
-//         if(!allAppointments.length) return [
-//             ...allAppointments,
-//             {
-//                 title: currAppointmentDate,
-//                 data: [{
-//                     ...currAppointment.slot,
-//                     available: slotAvailable
-//                 }]
-//             }
-//         ];
-//         const groupedAppointmentSlot = allAppointments.find(appointment => appointment.title === currAppointmentDate);
-//         if (!groupedAppointmentSlot) return [
-//             ...allAppointments,
-//             {
-//                 title: currAppointmentDate,
-//                 data: [{
-//                     ...currAppointment.slot,
-//                     available: slotAvailable
-//                 }]
-//             }
-//         ];
-//         groupedAppointmentSlot.data.push({
-//             ...currAppointment.slot,
-//             available: slotAvailable
-//         });
-//         return [
-//             ...allAppointments.filter(appointment => appointment.title !== currAppointmentDate),
-//             groupedAppointmentSlot
-//         ]
-//     }, []);
-// }
+const FUTURE_DATE = getFutureDate({ month: 3 });
 
 const getAppointmentSlots = async <Params>(params: Params[]): Promise<GetAppointmentsResponse[] | ErrorResponse> => {
     return requests.get<Params, GetAppointmentsResponse[]>(`${CONFIG.url}/services/${CONFIG.appointmentsServiceId}/slots`, params);
@@ -67,7 +31,7 @@ const bookAppointment = async(data: PostBookingFormData): Promise<PostBookingRes
 const getAvailableAppointmentSlots = async(): Promise<MarkedAppointmentSlot[]> => {
     const results = await Promise.all([
         getAppointmentSlots<AppointmentSlotParams>([
-            {to: CONFIG.FUTURE_DATE}
+            {to: FUTURE_DATE}
         ]),
         Bookings.getActiveBookings<BookingParams>([])
     ]);

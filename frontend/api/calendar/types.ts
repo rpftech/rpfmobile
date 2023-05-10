@@ -109,9 +109,17 @@ export interface PostBookingInvalidParams {
 };
 
 export interface GetFutureDataParams {
-    year: number;
-    month: number;
-    date: number
+    year?: number;
+    month?: number;
+    day?: number
+};
+
+export type DateMethod = (date: Date, time: number) => Date;
+
+export interface GetFutureDataParamsMethods {
+    year: DateMethod;
+    month: DateMethod;
+    day: DateMethod
 };
 
 export interface ErrorResponse {

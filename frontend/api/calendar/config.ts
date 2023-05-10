@@ -1,5 +1,4 @@
 const APP_NAME = 'RPF';
-const FUTURE_DATE = '2023-07-01';
 
 interface Config {
     apiKey: string;
@@ -17,8 +16,10 @@ const PROD_CONFIG: Config = {
     url: 'https://rpf.makeplans.com/api/v1',
     appointmentsServiceId: '24442'
 };
+
+const config = TEST_CONFIG;
+
 export const CONFIG = {
-    ...TEST_CONFIG,
+    ...config,
     APP_NAME,
-    FUTURE_DATE
 };

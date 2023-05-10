@@ -1,13 +1,10 @@
 import {View, StyleSheet} from "react-native";
 import { SplashScreen } from "expo-router";
 import React, {useCallback} from "react";
-
 import {Text} from 'react-native-paper'
-
 import BookingOnboarding from "../components/BookingOnboarding";
-import Calendar from "../components/Calendar";
-import ExpandableCalendarScreen from "../example/src/screens/expandableCalendarScreen";
 import Loader from "../components/Loader";
+import Counselling from "../components/Counselling";
 import useAvailableAppointmentSlots from "../hooks/useAvailableAppointmentSlots";
 import useBookingForm from "../hooks/useBookingForm";
 import useModalVisibility from "../hooks/useModalVisibility";
@@ -61,7 +58,7 @@ const Index = () => {
                         setBookAppointmentStatus={setBookAppointmentStatus}
                         hideModal={hideModal}
                     />
-                    <Calendar
+                    <Counselling
                         availableAppointmentSlotsResults={availableAppointmentSlotsResults}
                         setBookingForm={setBookingForm}
                         showModal={showModal}

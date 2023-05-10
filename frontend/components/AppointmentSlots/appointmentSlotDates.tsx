@@ -1,16 +1,15 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useMemo, useState} from "react";
 import {View, StyleSheet, FlatList, LayoutChangeEvent} from "react-native";
-
+import {Moment} from "moment";
 import {MarkedAppointmentSlot} from "../../api/calendar/types";
 import {BookingFormState} from "../../app";
 import AppointmentSlotCards from "./appointmentSlotCards";
-import {Text} from "react-native-paper";
-import AppointmentSlotDate from "./appointmentSlotDate";
 
 interface Props {
     items: MarkedAppointmentSlot[];
     showModal: () => void;
     setBookingForm: React.Dispatch<React.SetStateAction<BookingFormState>>;
+    selectedStartDate: Moment;
 };
 
 interface RenderItemProps {
@@ -19,8 +18,16 @@ interface RenderItemProps {
     setBookingForm: React.Dispatch<React.SetStateAction<BookingFormState>>;
 };
 
-const AppointmentSlotDates = ({ items, setBookingForm, showModal }: Props) => {
+const AppointmentSlotDates = ({ items, setBookingForm, showModal, selectedStartDate }: Props) => {
     const [dateYPositions, setDateYPositions] = useState(new Set());
+    const filteredSlots = useMemo(() => {
+        if(!items.length || !selectedStartDate) return;
+        return items.filter(availableAppointmentSlotsResult => {
+                return availableAppointmentSlotsResult.title === selectedStartDate.format('YYYY-MM-DD')
+            }
+        )
+    }, [selectedStartDate, items]);
+
     const renderAppointmentSlotDates = useCallback(({ item, setBookingForm, showModal }: RenderItemProps) => {
         return (
             <View onLayout={(event: LayoutChangeEvent) => {
@@ -53,7 +60,7 @@ const AppointmentSlotDates = ({ items, setBookingForm, showModal }: Props) => {
                     // console.log(currentItem.title);
                 }}
                 initialNumToRender={1}
-                data={items}
+                data={filteredSlots}
                 extraData={{setBookingForm, showModal}}
                 // ListHeaderComponent={<Text>Date: </Text>}
                 // stickyHeaderIndices={[0]}
