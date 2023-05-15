@@ -27,7 +27,7 @@ const Calendar = ({availableAppointmentSlotsResults, setShowCalendar, selectedSt
 
     const getMaxDate = useMemo((): Date | null => {
         if(!availableAppointmentSlotsResults.data.length) return null;
-        const dates = availableAppointmentSlotsResults.data.map(availableAppointmentSlot => availableAppointmentSlot.title);
+        const dates = availableAppointmentSlotsResults.data.map(availableAppointmentSlot => availableAppointmentSlot.date);
         return new Date(dates.at(-1));
     }, [availableAppointmentSlotsResults.data]);
 

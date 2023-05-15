@@ -1,4 +1,4 @@
-import {GetFutureDataParams, GetFutureDataParamsMethods, MarkedAppointmentSlot, MarkedDate} from "../types";
+import {TimeOptions, GetFutureDataParamsMethods, MarkedAppointmentSlot, MarkedDate} from "../types";
 
 export const getDate = (date: string): string => {
     return new Date(date).toISOString().split('T')[0];
@@ -48,39 +48,31 @@ export const getDateTimeRange = (startDate: string, endDate: string, dates: stri
 
 export const createDateTimeline = (availableAppointmentSlots: MarkedAppointmentSlot[]): MarkedDate[] => {
     const startDate = getDate(new Date().toISOString());
-    const endDate = availableAppointmentSlots.at(-1);
-    const dates = availableAppointmentSlots.map(availableAppointmentSlot => availableAppointmentSlot.title);
-    return getDateTimeRange(startDate, endDate.title, dates);
+    const endSlot = availableAppointmentSlots.at(-1);
+    const dates = availableAppointmentSlots.map(availableAppointmentSlot => availableAppointmentSlot.date);
+    return getDateTimeRange(startDate, endSlot.date, dates);
 };
 
-const getFutureDateByYear = (date: Date, time: number): Date => {
-    const copiedDate = new Date(date.getTime());
-    copiedDate.setFullYear(copiedDate.getFullYear() + time);
-    return copiedDate
+// const getFutureDateByYear = (date: Date, time: number): Date => {
+//     const copiedDate = new Date(date.getTime());
+//     copiedDate.setFullYear(copiedDate.getFullYear() + time);
+//     return copiedDate
+// };
+//
+// const getFutureDateByMonth = (date: Date, time: number): Date => {
+//     const copiedDate = new Date(date.getTime());
+//     copiedDate.setMonth(copiedDate.getMonth() + time);
+//     return copiedDate
+// };
+
+const getFutureDateByTimeOptions = (params: TimeOptions): Date => {
+    const editedDate = new Date();
+    if(params.year) editedDate.setFullYear(editedDate.getFullYear() + params.year);
+    if(params.month) editedDate.setMonth(editedDate.getMonth() + params.month);
+    if(params.day) editedDate.setDate(editedDate.getDate() + params.day);
+    return editedDate;
 };
 
-const getFutureDateByMonth = (date: Date, time: number): Date => {
-    const copiedDate = new Date(date.getTime());
-    copiedDate.setMonth(copiedDate.getMonth() + time);
-    return copiedDate
-};
-
-const getFutureDateByDay = (date: Date, time: number): Date => {
-    const copiedDate = new Date(date.getTime());
-    copiedDate.setDate(copiedDate.getDate() + time);
-    return copiedDate
-};
-
-export const getFutureDate = (dateObj: GetFutureDataParams): string => {
-    const times = Object.keys(dateObj);
-    const dateMethods: GetFutureDataParamsMethods = {
-        year: getFutureDateByYear,
-        month: getFutureDateByMonth,
-        day: getFutureDateByDay,
-    };
-    const calculatedDate = times.reduce<Date>((currentDate, time) => {
-        return dateMethods[time](currentDate, dateObj[time])
-    }, new Date());
-    console.log(getDate(calculatedDate.toISOString()))
-    return getDate(calculatedDate.toISOString());
+export const getFutureDate = (dateObj: TimeOptions): string => {
+    return getDate(getFutureDateByTimeOptions(dateObj).toISOString());
 };

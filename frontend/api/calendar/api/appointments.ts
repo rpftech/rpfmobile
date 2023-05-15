@@ -70,8 +70,9 @@ const getAvailableAppointmentSlots = async(): Promise<MarkedAppointmentSlot[]> =
             groupedAppointmentSlot
         ]
     }, []);
-    const appointmentAndBookings = !noActiveBookings ? activeBookings.reduce<MarkedAppointmentSlot[]>((allAppointmentsAndBookings, currBooking) => {
-        const groupedAppointmentSlot = allAppointmentsAndBookings.find(slot => datesMatch(currBooking.booking.booked_from, slot.title));
+    if(noActiveBookings) return [];
+    return activeBookings.reduce<MarkedAppointmentSlot[]>((allAppointmentsAndBookings, currBooking) => {
+        const groupedAppointmentSlot = allAppointmentsAndBookings.find(slot => datesMatch(currBooking.booking.booked_from, slot.date));
         if (!groupedAppointmentSlot) return [
             ...allAppointmentsAndBookings,
             {

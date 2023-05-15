@@ -26,7 +26,7 @@ export interface GetAppointmentsResponse {
 };
 
 export interface MarkedAppointmentSlot {
-    title: string;
+    date: string;
     data: AvailableAppointmentSlot[];
 };
 
@@ -108,7 +108,7 @@ export interface PostBookingInvalidParams {
     };
 };
 
-export interface GetFutureDataParams {
+export interface TimeOptions {
     year?: number;
     month?: number;
     day?: number

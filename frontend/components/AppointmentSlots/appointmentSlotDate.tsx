@@ -8,7 +8,7 @@ interface Props {
 
 const AppointmentSlotDate = ({ item }: Props) => {
     return (
-        <Text>Date: {item.title}</Text>
+        <Text>Date: {item.date}</Text>
     )
 };
 

@@ -23,7 +23,7 @@ const AppointmentSlotDates = ({ items, setBookingForm, showModal, selectedStartD
     const filteredSlots = useMemo(() => {
         if(!items.length || !selectedStartDate) return;
         return items.filter(availableAppointmentSlotsResult => {
-                return availableAppointmentSlotsResult.title === selectedStartDate.format('YYYY-MM-DD')
+                return availableAppointmentSlotsResult.date === selectedStartDate.format('YYYY-MM-DD')
             }
         )
     }, [selectedStartDate, items]);
@@ -57,7 +57,7 @@ const AppointmentSlotDates = ({ items, setBookingForm, showModal, selectedStartD
                     const currentDatePositionIndex = dateYPositionsArr.indexOf(currentDatePositionItem);
                     if(currentDatePositionIndex === -1) return;
                     const currentItem = items.at(currentDatePositionIndex);
-                    // console.log(currentItem.title);
+                    // console.log(currentItem.date);
                 }}
                 initialNumToRender={1}
                 data={filteredSlots}
