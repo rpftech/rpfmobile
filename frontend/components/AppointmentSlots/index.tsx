@@ -1,6 +1,6 @@
 import React from "react";
 import {List} from "react-native-paper";
-import {MarkedAppointmentSlot} from "../../api/calendar/types";
+import {MarkedAppointmentSlot} from "../../services/data/appointmentSlots/types";
 import {BookingFormState} from "../../app";
 import {StyleSheet} from "react-native";
 import {Moment} from "moment";

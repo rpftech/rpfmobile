@@ -4,7 +4,7 @@ import {Button, Text} from "react-native-paper";
 import CalendarPicker from 'react-native-calendar-picker';
 import {Moment} from "moment";
 import {AvailableAppointmentSlotsResultsState} from "../../hooks/useAvailableAppointmentSlots";
-import {createDateTimeline} from "../../api/calendar/lib/date";
+import {createDateTimeline} from "../../lib/dates";
 
 
 interface Props {

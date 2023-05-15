@@ -1,17 +1,17 @@
 import {CONFIG} from "../config";
+import {ErrorResponse} from "../api/types";
 
-import {ErrorResponse, PostBookingRequest} from "../types";
-
-const combineParams = <Params>(params: Params[]): string => {
-    return params.reduce<string>((accParams, currParams) => {
-        const strParam = Object.entries(currParams).reduce((acp, p) => `${acp}${p[0]}=${p[1]}`, '');
-        return `${accParams}${strParam}`;
+const combineParams = (params: {}): string => {
+    return Object.keys(params).reduce((allParams, currParamsKey) => {
+        return allParams.length
+            ? `${allParams}&${currParamsKey}=${params[currParamsKey]}`
+            : `${currParamsKey}=${params[currParamsKey]}`;
     }, '');
 };
 
 export const requests = {
-    async get<Params, Response>(url: string, params: Params[]): Promise<Response | ErrorResponse> {
-        const response = await fetch(`${url}?${combineParams<Params>(params)}`, {
+    async get<Response>(url: string, params: {}): Promise<Response | ErrorResponse> {
+        const response = await fetch(`${url}?${combineParams(params)}`, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -21,7 +21,7 @@ export const requests = {
         });
         return response.json();
     },
-    async post<Response>(url: string, data: PostBookingRequest): Promise<Response | ErrorResponse> {
+    async post<Response, DataType>(url: string, data: DataType): Promise<Response | ErrorResponse> {
         const response = await fetch(`${url}`, {
             method: 'POST',
             headers: {

@@ -1,7 +1,7 @@
 import {StyleSheet, View} from "react-native";
 import {Button, Text, TextInput} from "react-native-paper";
 import React, {useCallback} from "react";
-import Calendar from "../../api/calendar";
+import Calendar from "../../services/api/calendar";
 import {BookingFormState} from "../../app";
 import {BookAppointmentStatusState} from "../../hooks/useBookingAppointment";
 
@@ -24,7 +24,7 @@ const BookingForm = ({bookingForm, setBookingForm, setBookAppointmentStatus}: Pr
             ...state,
             loading: true,
         }));
-        const result = await Calendar.Appointments.bookAppointment({
+        const result = await Calendar.Bookings.bookAppointment({
             booking: {
                 booked_from: bookingForm.startTime,
                 booked_to: bookingForm.endTime,

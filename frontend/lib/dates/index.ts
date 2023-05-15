@@ -1,4 +1,5 @@
-import {TimeOptions, GetFutureDataParamsMethods, MarkedAppointmentSlot, MarkedDate} from "../types";
+import {TimeOptions, GetFutureDataParamsMethods, MarkedDate} from "./types";
+import {MarkedAppointmentSlot} from '../../services/data/appointmentSlots/types';
 
 export const getDate = (date: string): string => {
     return new Date(date).toISOString().split('T')[0];

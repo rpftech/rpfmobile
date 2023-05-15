@@ -2,7 +2,7 @@ import React from "react";
 import {StyleSheet, View} from "react-native";
 import {Button, Text} from "react-native-paper";
 
-import {formatDate} from "../../api/calendar/lib/date";
+import {formatDate} from "../../lib/dates";
 import {BookingFormState} from "../../app";
 
 interface Props {

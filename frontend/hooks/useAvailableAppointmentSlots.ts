@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from "react";
-import Calendar from "../api/calendar";
-import {MarkedAppointmentSlot} from "../api/calendar/types";
+import {MarkedAppointmentSlot} from "../services/data/appointmentSlots/types";
+import {getAvailableAppointmentSlots} from "../services/data/appointmentSlots";
 
 export interface AvailableAppointmentSlotsResultsState {
     loading: boolean;
@@ -22,7 +22,7 @@ const useAvailableAppointmentSlots = () => {
             loading: true,
             data: []
         }));
-        const results = await Calendar.Appointments.getAvailableAppointmentSlots();
+        const results = await getAvailableAppointmentSlots();
         // setAvailableAppointmentSlots(results.slice(0, 100));
         setAvailableAppointmentSlotsResults(state => ({
             ...state,

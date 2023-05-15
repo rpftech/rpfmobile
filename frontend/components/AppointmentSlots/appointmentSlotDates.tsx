@@ -1,7 +1,7 @@
 import React, {useCallback, useMemo, useState} from "react";
 import {View, StyleSheet, FlatList, LayoutChangeEvent} from "react-native";
 import {Moment} from "moment";
-import {MarkedAppointmentSlot} from "../../api/calendar/types";
+import {MarkedAppointmentSlot} from "../../services/data/appointmentSlots/types";
 import {BookingFormState} from "../../app";
 import AppointmentSlotCards from "./appointmentSlotCards";
 

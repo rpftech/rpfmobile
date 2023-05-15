@@ -1,5 +1,5 @@
 import React, {useCallback} from "react";
-import {AvailableAppointmentSlot} from "../../api/calendar/types";
+import {AvailableAppointmentSlot} from "../../services/data/appointmentSlots/types";
 import {BookingFormState} from "../../app";
 import AppointmentSlotCard from "./appointmentSlotCard";
 import {FlatList, StyleSheet, View} from "react-native";

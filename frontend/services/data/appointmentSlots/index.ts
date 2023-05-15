@@ -1,39 +1,13 @@
-import {requests} from "../lib/requests";
-import {CONFIG} from "../config";
-import {
-    AppointmentSlotParams, BookingParams,
-    ErrorResponse,
-    GetAppointmentsResponse,
-    MarkedAppointmentSlot, PostBookingErrorResponse,
-    PostBookingFormData,
-    PostBookingResponse
-} from "../types";
-import Bookings from "./bookings";
-import {datesMatch, formatDate, getDate, getFutureDate} from "../lib/date";
+import {MarkedAppointmentSlot} from "./types";
+import Calendar from "../../api/calendar";
+import {datesMatch, formatDate, getDate, getFutureDate} from "../../../lib/dates";
 
 const FUTURE_DATE = getFutureDate({ month: 3 });
 
-const getAppointmentSlots = async <Params>(params: Params[]): Promise<GetAppointmentsResponse[] | ErrorResponse> => {
-    return requests.get<Params, GetAppointmentsResponse[]>(`${CONFIG.url}/services/${CONFIG.appointmentsServiceId}/slots`, params);
-};
-
-const bookAppointment = async(data: PostBookingFormData): Promise<PostBookingResponse | PostBookingErrorResponse> => {
-    return requests.post<PostBookingResponse>(`${CONFIG.url}/bookings`, {
-        booking: {
-            ...data.booking,
-            service_id: +CONFIG.appointmentsServiceId,
-            public_booking: true
-        },
-        confirm: true
-    });
-};
-
-const getAvailableAppointmentSlots = async(): Promise<MarkedAppointmentSlot[]> => {
+export const getAvailableAppointmentSlots = async(): Promise<MarkedAppointmentSlot[]> => {
     const results = await Promise.all([
-        getAppointmentSlots<AppointmentSlotParams>([
-            {to: FUTURE_DATE}
-        ]),
-        Bookings.getActiveBookings<BookingParams>([])
+        Calendar.Appointments.getAppointmentSlots({to: FUTURE_DATE}),
+        Calendar.Bookings.getActiveBookings({})
     ]);
     const [appointments, activeBookings] = results;
     if('error' in appointments) return [];
@@ -121,29 +95,3 @@ const getAvailableAppointmentSlots = async(): Promise<MarkedAppointmentSlot[]> =
     //     })) : [])
     // ].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 };
-
-// getAppointmentSlots<AppointmentSlotParams>([
-//     {to: FUTURE_DATE}
-// ]).then(console.log)
-//
-// getActiveBookings<BookingParams>([
-//     {end: FUTURE_DATE}
-// ]).then(console.log)
-
-
-// getAvailableAppointmentSlots().then(console.log)
-// bookAppointment({
-//     booking: {
-//         booked_from: '2023-06-08T15:00:00+01:00',
-//         booked_to: '2023-06-08T16:00:00+01:00',
-//         person_attributes: {
-//             name: 'Bob'
-//         }
-//     }
-// }).then(console.log)
-
-export default {
-    getAvailableAppointmentSlots,
-    bookAppointment,
-    getAppointmentSlots
-}

@@ -1,39 +1,4 @@
-export interface AppointmentSlotParams {
-    to?: string;
-};
-
-export interface BookingParams {
-    start?: string;
-    end?: string;
-};
-
-export interface AppointmentSlot {
-    timestamp: string;
-    timestamp_end: string;
-    formatted_timestamp: string;
-    formatted_timestamp_end: string;
-    // free: number;
-    // available_resources: number[];
-    // maximum_capacity: number;
-}
-
-export interface AvailableAppointmentSlot extends AppointmentSlot {
-    available: boolean;
-}
-
-export interface GetAppointmentsResponse {
-    slot: AppointmentSlot;
-};
-
-export interface MarkedAppointmentSlot {
-    date: string;
-    data: AvailableAppointmentSlot[];
-};
-
-export interface MarkedDate {
-    date: string;
-    disabled: boolean;
-}
+import {ErrorResponse} from "../types";
 
 export interface GetActiveBookingsData {
     "booked_from": string;
@@ -96,6 +61,19 @@ export interface PostBookingResponse {
     };
 };
 
+export interface PostBookingRequest {
+    booking: {
+        service_id: number;
+        booked_from: string;
+        booked_to: string;
+        person_attributes: {
+            name: string;
+        };
+        public_booking: boolean;
+    }
+    confirm: boolean
+};
+
 export interface PostBookingInvalidParams {
     'person.base'?: string[];
     resource?: string[];
@@ -106,52 +84,6 @@ export interface PostBookingInvalidParams {
     person_attributes?: {
         base: string[]
     };
-};
-
-export interface TimeOptions {
-    year?: number;
-    month?: number;
-    day?: number
-};
-
-export type DateMethod = (date: Date, time: number) => Date;
-
-export interface GetFutureDataParamsMethods {
-    year: DateMethod;
-    month: DateMethod;
-    day: DateMethod
-};
-
-export interface ErrorResponse {
-    error: {
-        description: string;
-    }
-};
-
-export interface PostBookingRequest {
-    booking: {
-        service_id: number;
-        booked_from: string;
-        booked_to: string;
-        person_attributes: {
-            name: string;
-        };
-        public_booking: boolean;
-    }
-    confirm: boolean
-};
-
-export interface PostBookingRequest {
-    booking: {
-        service_id: number;
-        booked_from: string;
-        booked_to: string;
-        person_attributes: {
-            name: string;
-        };
-        public_booking: boolean;
-    }
-    confirm: boolean
 };
 
 export type PostBookingErrorResponse = PostBookingInvalidParams | ErrorResponse;

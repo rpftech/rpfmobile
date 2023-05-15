@@ -1,6 +1,6 @@
 import React from "react";
 import {Text} from "react-native-paper";
-import {MarkedAppointmentSlot} from "../../api/calendar/types";
+import {MarkedAppointmentSlot} from "../../services/data/appointmentSlots/types";
 
 interface Props {
     item: MarkedAppointmentSlot;

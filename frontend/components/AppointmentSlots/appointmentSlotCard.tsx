@@ -1,6 +1,6 @@
 import React, {useMemo, useCallback} from "react";
 import {Button, Card, Text} from "react-native-paper";
-import {AvailableAppointmentSlot} from "../../api/calendar/types";
+import {AvailableAppointmentSlot} from "../../services/data/appointmentSlots/types";
 import {BookingFormState} from "../../app";
 
 interface Props {
