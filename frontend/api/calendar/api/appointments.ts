@@ -43,18 +43,18 @@ const getAvailableAppointmentSlots = async(): Promise<MarkedAppointmentSlot[]> =
         if(!allAppointments.length) return [
             ...allAppointments,
             {
-                title: currAppointmentDate,
+                date: currAppointmentDate,
                 data: [{
                     ...currAppointment.slot,
                     available: true
                 }]
             }
         ];
-        const groupedAppointmentSlot = allAppointments.find(appointment => appointment.title === currAppointmentDate);
+        const groupedAppointmentSlot = allAppointments.find(appointment => appointment.date === currAppointmentDate);
         if (!groupedAppointmentSlot) return [
             ...allAppointments,
             {
-                title: currAppointmentDate,
+                date: currAppointmentDate,
                 data: [{
                     ...currAppointment.slot,
                     available: true
@@ -66,7 +66,7 @@ const getAvailableAppointmentSlots = async(): Promise<MarkedAppointmentSlot[]> =
             available: true
         });
         return [
-            ...allAppointments.filter(appointment => appointment.title !== currAppointmentDate),
+            ...allAppointments.filter(appointment => appointment.date !== currAppointmentDate),
             groupedAppointmentSlot
         ]
     }, []);
@@ -76,7 +76,7 @@ const getAvailableAppointmentSlots = async(): Promise<MarkedAppointmentSlot[]> =
         if (!groupedAppointmentSlot) return [
             ...allAppointmentsAndBookings,
             {
-                title: getDate(currBooking.booking.booked_from),
+                date: getDate(currBooking.booking.booked_from),
                 data: [{
                     timestamp: currBooking.booking.booked_from,
                     timestamp_end: currBooking.booking.booked_to,
@@ -94,23 +94,23 @@ const getAvailableAppointmentSlots = async(): Promise<MarkedAppointmentSlot[]> =
             available: false
         });
         return [
-            ...allAppointmentsAndBookings.filter(slot => !datesMatch(currBooking.booking.booked_from, slot.title)),
+            ...allAppointmentsAndBookings.filter(slot => !datesMatch(currBooking.booking.booked_from, slot.date)),
             groupedAppointmentSlot
         ]
-    }, editedAppointments) : [];
-    return appointmentAndBookings.map(appointmentAndBooking => {
-        return {
-            ...appointmentAndBooking,
-            data: appointmentAndBooking.data.sort((a,b) =>
-                new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-            )
-        };
-    }).sort((a, b) => new Date(a.title).getTime() - new Date(b.title).getTime());
+    }, editedAppointments)
+        .map(appointmentAndBooking => {
+            return {
+                ...appointmentAndBooking,
+                data: appointmentAndBooking.data.sort((a,b) =>
+                    new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+                )
+            };
+        }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     // return [
     //     ...editedAppointments,
     //     // Add appointments that are taken so we can show them in app MVP
     //     ...(!noActiveBookings ? activeBookings.map(activeBooking => ({
-    //         title: new Date(activeBooking.booking.booked_from).toISOString().split('T')[0],
+    //         date: new Date(activeBooking.booking.booked_from).toISOString().split('T')[0],
     //         data: [{
     //             timestamp: activeBooking.booking.booked_from,
     //             timestamp_end: activeBooking.booking.booked_to,
@@ -119,7 +119,7 @@ const getAvailableAppointmentSlots = async(): Promise<MarkedAppointmentSlot[]> =
     //             available: false
     //         }]
     //     })) : [])
-    // ].sort((a, b) => new Date(a.title).getTime() - new Date(b.title).getTime())
+    // ].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 };
 
 // getAppointmentSlots<AppointmentSlotParams>([
