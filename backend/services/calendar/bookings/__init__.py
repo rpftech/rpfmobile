@@ -36,11 +36,5 @@ def book_appointment() -> tuple[flask.Response, int]:
             ),
             confirm="true",
         )
-        results = (
-            request_methods.post(
-                url=f"{combined_config.url}/bookings",
-                data=data,
-            ),
-            200,
-        )
+        results = request_methods.post(url=f"{combined_config.url}/bookings", data=data)
         return flask.jsonify(results), 200
