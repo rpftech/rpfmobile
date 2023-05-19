@@ -6,15 +6,21 @@ export const getDate = (date: string): string => {
 };
 
 export const formatDate = (date: string): string => {
-    const options: Intl.DateTimeFormatOptions = {
+    const dateOptions: Intl.DateTimeFormatOptions = {
         weekday: "long",
         year: "numeric",
         month: "short",
-        day: "numeric",
+        day: "numeric"
+    };
+    const timeOptions: Intl.DateTimeFormatOptions = {
         hour: "numeric",
         minute: "numeric",
+        hour12: false
     };
-    return new Intl.DateTimeFormat("en-GB", options).format(new Date(date));
+    const dateObj = new Date(date);
+    const formattedDate = new Intl.DateTimeFormat("en-GB", dateOptions).format(dateObj);
+    const formattedTime = new Intl.DateTimeFormat("en-GB", timeOptions).format(dateObj);
+    return `${formattedDate}, ${formattedTime}`;
 }
 
 export const datesMatch = (date1: string, date2: string): boolean => {
