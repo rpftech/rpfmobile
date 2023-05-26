@@ -16,7 +16,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "redeemed.pillar.of.fire"
     },
     "android": {
       "adaptiveIcon": {
