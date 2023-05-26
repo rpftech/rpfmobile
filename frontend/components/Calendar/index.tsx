@@ -12,10 +12,11 @@ interface Props {
     setShowCalendar: React.Dispatch<React.SetStateAction<boolean>>;
     selectedStartDate: Moment;
     setSelectedStartDate: React.Dispatch<React.SetStateAction<Moment>>;
+    minDate: Date;
+    maxDate: Date;
 }
 
-const Calendar = ({availableAppointmentSlotsResults, setShowCalendar, selectedStartDate, setSelectedStartDate}: Props) => {
-    const today = new Date();
+const Calendar = ({availableAppointmentSlotsResults, setShowCalendar, selectedStartDate, setSelectedStartDate, minDate, maxDate}: Props) => {
     const getStartDate = (fallbackDate: Date = null) => selectedStartDate ? new Date(selectedStartDate.toString()) : fallbackDate;
 
     const getMarkedDates = useMemo(() => {
@@ -23,12 +24,6 @@ const Calendar = ({availableAppointmentSlotsResults, setShowCalendar, selectedSt
         return createDateTimeline(availableAppointmentSlotsResults.data).reduce<Date[]>((markedDates, markedDate) => {
             return markedDate.disabled ? [...markedDates, new Date(markedDate.date)] : markedDates;
         }, []);
-    }, [availableAppointmentSlotsResults.data]);
-
-    const getMaxDate = useMemo((): Date | null => {
-        if(!availableAppointmentSlotsResults.data.length) return null;
-        const dates = availableAppointmentSlotsResults.data.map(availableAppointmentSlot => availableAppointmentSlot.date);
-        return new Date(dates.at(-1));
     }, [availableAppointmentSlotsResults.data]);
 
     const onCalendarDateChange = (date: Moment) => {
@@ -49,10 +44,10 @@ const Calendar = ({availableAppointmentSlotsResults, setShowCalendar, selectedSt
             <CalendarPicker
                 onDateChange={onCalendarDateChange}
                 selectedStartDate={getStartDate()}
-                minDate={today}
-                maxDate={getMaxDate}
+                minDate={minDate}
+                maxDate={maxDate}
                 restrictMonthNavigation={true}
-                initialDate={getStartDate(today)}
+                initialDate={getStartDate(minDate)}
                 disabledDates={getMarkedDates}
             />
             <Button disabled={!selectedStartDate} mode='contained' onPress={() => handleCalendarDisplay('show')}>Ok</Button>

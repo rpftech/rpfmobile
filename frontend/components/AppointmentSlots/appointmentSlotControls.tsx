@@ -1,87 +1,54 @@
-import {Animated, Pressable, StyleSheet, View} from "react-native";
-import {AntDesign} from "@expo/vector-icons";
-import {Button, Text} from "react-native-paper";
-import React, {useRef, useState} from "react";
+import {StyleSheet, View} from "react-native";
+import React, {useMemo, useState} from "react";
+import {getFutureDate, STANDARD_DATE_FORMAT} from "../../lib/dates";
+import AppointmentSlotControlsButton from "./appointmentSlotControlsButton";
+import AppointmentSlotControlsHeader from "./appointmentSlotControlsHeader";
 
 interface Props {
     formattedStartDate: (format: string) => string;
-    onButtonDateChange: (direction: string) => void;
+    onButtonDateChange: (direction: string, callback?: (changedDateStr: string) => void) => void;
     handleCalendarDisplay: (action: string) => void;
+    minDate: Date;
+    maxDate: Date;
 };
 
-interface ButtonProps {
-    scale: Animated.Value;
-    opacity: Animated.Value;
-}
-
-const AppointmentSlotControls = ({ formattedStartDate, onButtonDateChange, handleCalendarDisplay }: Props) => {
-    const leftButtonProps = {
-        scale: useRef(new Animated.Value(1)).current,
-        opacity: useRef(new Animated.Value(1)).current
-    };
-    const rightButtonProps = {
-        scale: useRef(new Animated.Value(1)).current,
-        opacity: useRef(new Animated.Value(1)).current
-    };
-    const buttonProps = {
-        left: leftButtonProps,
-        right: rightButtonProps
-    };
+const AppointmentSlotControls = ({ formattedStartDate, onButtonDateChange, handleCalendarDisplay, minDate, maxDate }: Props) => {
     const [disableButtons, setDisableButtons] = useState(false);
 
-    const scaleButton = (buttonProps: ButtonProps) => {
-        return Animated.sequence([
-            Animated.timing(buttonProps.scale, {
-                toValue: 1.4,
-                duration: 250,
-                useNativeDriver: true
-            }),
-            Animated.timing(buttonProps.scale, {
-                toValue: 1,
-                duration: 250,
-                useNativeDriver: true
-            })
-        ])
-    };
-    const handlePressOut = (direction: string) => {
-        setDisableButtons(true);
-        const buttonProp = buttonProps[direction as keyof typeof buttonProps];
-        scaleButton(buttonProp).start(({ finished }) => {
-            onButtonDateChange(direction);
-            setDisableButtons(false);
-        })
-    };
+    const maxDateThresholdReached = useMemo((): boolean => {
+        const startDateObj = new Date(formattedStartDate(STANDARD_DATE_FORMAT));
+        const lastDateBeforeDisable = getFutureDate({day: -7}, maxDate);
+        return startDateObj.getTime() > lastDateBeforeDisable.getTime();
+    }, [formattedStartDate, maxDate]);
 
-    const setScale = (scale: Animated.Value | number) => {
-        return {
-            transform: [
-                {scale: scale}
-            ]
-        };
-    };
-
-    const handlePressIn = () => {
-        console.log('Pressing in!')
-    };
+    const minDateThresholdReached = useMemo((): boolean => {
+        const startDateObj = new Date(formattedStartDate(STANDARD_DATE_FORMAT));
+        const earliestDateBeforeDisable = getFutureDate({day: 7}, minDate);
+        return startDateObj.getTime() < earliestDateBeforeDisable.getTime();
+    }, [formattedStartDate, minDate]);
 
     return (
-        <View style={styles.header}>
-            <Animated.View style={[styles.animatedView, setScale(leftButtonProps.scale)]}>
-                <Pressable style={{ opacity: disableButtons ? 0.5 : 1 }} disabled={disableButtons} onPressIn={handlePressIn} onPressOut={() => handlePressOut('left')}>
-                    <AntDesign name="leftcircle" size={24} color="black" />
-                </Pressable>
-            </Animated.View>
-            <View style={styles.headerTextContainer}>
-                <Text>{formattedStartDate('dddd Do MMMM YYYY')}</Text>
-                <Button compact={true} mode='elevated' onPress={() => handleCalendarDisplay('reset')}>Change date</Button>
-            </View>
-            {/* Major functionality to work on next: */}
-            {/* 2. Figure out how to add some kind of animation to show the button has been clicked */}
-            <Animated.View style={[styles.animatedView, setScale(rightButtonProps.scale)]}>
-                <Pressable style={{ opacity: disableButtons ? 0.5 : 1 }} disabled={disableButtons} onPressIn={handlePressIn} onPressOut={() => handlePressOut('right')}>
-                    <AntDesign disabled={disableButtons} name="rightcircle" size={24} color="black" />
-                </Pressable>
-            </Animated.View>
+        <View style={styles.root}>
+            <AppointmentSlotControlsButton
+                onButtonDateChange={onButtonDateChange}
+                dateThresholdReached={minDateThresholdReached}
+                disableButtons={disableButtons}
+                setDisableButtons={setDisableButtons}
+                buttonArrowDirection='left'
+                name='leftcircle'
+            />
+            <AppointmentSlotControlsHeader
+                formattedStartDate={formattedStartDate}
+                handleCalendarDisplay={handleCalendarDisplay}
+            />
+            <AppointmentSlotControlsButton
+                onButtonDateChange={onButtonDateChange}
+                dateThresholdReached={maxDateThresholdReached}
+                disableButtons={disableButtons}
+                setDisableButtons={setDisableButtons}
+                buttonArrowDirection='right'
+                name='rightcircle'
+            />
         </View>
     )
 };
@@ -89,17 +56,7 @@ const AppointmentSlotControls = ({ formattedStartDate, onButtonDateChange, handl
 export default AppointmentSlotControls;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#FFFFFF'
-    },
-    calendarContainer: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "space-evenly",
-        gap: 20
-    },
-    header: {
+    root: {
         flexDirection: 'row',
         justifyContent: "space-between",
         alignItems: "center",
@@ -107,21 +64,5 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
         paddingRight: 10,
         paddingLeft: 10
-    },
-    headerTextContainer: {
-        alignItems: "center"
-    },
-    animatedView: {
-        transform: [
-            {perspective: 1000},
-        ]
-    },
-    dateButton: {
-        transform: [
-            {scale: 1.5},
-        ]
-    },
-    view: {
-        flex: 1
     }
 });

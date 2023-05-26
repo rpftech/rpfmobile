@@ -1,8 +1,18 @@
-import {TimeOptions, GetFutureDataParamsMethods, MarkedDate} from "./types";
+import {TimeOptions, MarkedDate} from "./types";
 import {MarkedAppointmentSlot} from '../../services/data/appointmentSlots/types';
 
-export const getDate = (date: string): string => {
-    return new Date(date).toISOString().split('T')[0];
+export const STANDARD_DATE_FORMAT = 'YYYY-MM-DD';
+
+export const getDateFromString = (date: string): string => {
+    return convertDateToString(new Date(date));
+};
+
+// export const getDateFromDateObj = (date: Date): string => {
+//     return date.toISOString().split('T')[0];
+// };
+
+export const convertDateToString = (date: Date): string => {
+    return date.toISOString().split('T')[0];
 };
 
 export const formatDate = (date: string): string => {
@@ -24,7 +34,7 @@ export const formatDate = (date: string): string => {
 }
 
 export const datesMatch = (date1: string, date2: string): boolean => {
-    return new Date(getDate(date1)).getTime() === new Date(getDate(date2)).getTime()
+    return new Date(getDateFromString(date1)).getTime() === new Date(getDateFromString(date2)).getTime()
 };
 
 export const getDateTimeRange = (startDate: string, endDate: string, dates: string[], markedDates: MarkedDate[] = []): MarkedDate[] => {
@@ -39,22 +49,22 @@ export const getDateTimeRange = (startDate: string, endDate: string, dates: stri
                 disabled: false
             }
         ];
-        return getDateTimeRange(getDate(startDateObj.toISOString()), endDate, dates, editedMarkedDates);
+        return getDateTimeRange(getDateFromString(startDateObj.toISOString()), endDate, dates, editedMarkedDates);
     };
     const startDateObj = new Date(startDate);
     const editedMarkedDates = [
         ...markedDates,
         {
-            date: getDate(startDateObj.toISOString()),
+            date: getDateFromString(startDateObj.toISOString()),
             disabled: true
         }
     ]
     startDateObj.setDate(startDateObj.getDate() + 1);
-    return getDateTimeRange(getDate(startDateObj.toISOString()), endDate, dates, editedMarkedDates);
+    return getDateTimeRange(getDateFromString(startDateObj.toISOString()), endDate, dates, editedMarkedDates);
 };
 
 export const createDateTimeline = (availableAppointmentSlots: MarkedAppointmentSlot[]): MarkedDate[] => {
-    const startDate = getDate(new Date().toISOString());
+    const startDate = getDateFromString(new Date().toISOString());
     const endSlot = availableAppointmentSlots.at(-1);
     const dates = availableAppointmentSlots.map(availableAppointmentSlot => availableAppointmentSlot.date);
     return getDateTimeRange(startDate, endSlot.date, dates);
@@ -72,14 +82,14 @@ export const createDateTimeline = (availableAppointmentSlots: MarkedAppointmentS
 //     return copiedDate
 // };
 
-const getFutureDateByTimeOptions = (params: TimeOptions): Date => {
-    const editedDate = new Date();
+const getFutureDateByTimeOptions = (params: TimeOptions, startDate: Date | null): Date => {
+    const editedDate = startDate ?? new Date();
     if(params.year) editedDate.setFullYear(editedDate.getFullYear() + params.year);
     if(params.month) editedDate.setMonth(editedDate.getMonth() + params.month);
     if(params.day) editedDate.setDate(editedDate.getDate() + params.day);
     return editedDate;
 };
 
-export const getFutureDate = (dateObj: TimeOptions): string => {
-    return getDate(getFutureDateByTimeOptions(dateObj).toISOString());
+export const getFutureDate = (params: TimeOptions, startDate: Date = null): Date => {
+    return getFutureDateByTimeOptions(params, startDate);
 };

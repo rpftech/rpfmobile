@@ -1,8 +1,8 @@
 import {MarkedAppointmentSlot} from "./types";
 import Calendar from "../../api/calendar";
-import {datesMatch, formatDate, getDate, getFutureDate} from "../../../lib/dates";
+import {convertDateToString, datesMatch, formatDate, getDateFromString, getFutureDate} from "../../../lib/dates";
 
-const FUTURE_DATE = getFutureDate({ month: 3 });
+const FUTURE_DATE = convertDateToString(getFutureDate({ month: 3 }));
 
 export const getAvailableAppointmentSlots = async(): Promise<MarkedAppointmentSlot[]> => {
     const results = await Promise.all([
@@ -13,7 +13,7 @@ export const getAvailableAppointmentSlots = async(): Promise<MarkedAppointmentSl
     if('error' in appointments) return [];
     const noActiveBookings = 'error' in activeBookings;
     const editedAppointments =  appointments.reduce<MarkedAppointmentSlot[]>((allAppointments, currAppointment) => {
-        const currAppointmentDate = getDate(currAppointment.slot.timestamp);
+        const currAppointmentDate = getDateFromString(currAppointment.slot.timestamp);
         if(!allAppointments.length) return [
             ...allAppointments,
             {
@@ -50,7 +50,7 @@ export const getAvailableAppointmentSlots = async(): Promise<MarkedAppointmentSl
         if (!groupedAppointmentSlot) return [
             ...allAppointmentsAndBookings,
             {
-                date: getDate(currBooking.booking.booked_from),
+                date: getDateFromString(currBooking.booking.booked_from),
                 data: [{
                     timestamp: currBooking.booking.booked_from,
                     timestamp_end: currBooking.booking.booked_to,

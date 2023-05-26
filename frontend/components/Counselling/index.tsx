@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useMemo, useState} from "react";
 import {StyleSheet, View} from "react-native";
 import {Moment} from "moment";
 import {BookingFormState} from "../../app";
@@ -7,6 +7,7 @@ import Calendar from "../Calendar";
 import AppointmentSlots from "../AppointmentSlots/index";
 import AppointmentSlotDates from "../AppointmentSlots/appointmentSlotDates";
 import AppointmentSlotControls from "../AppointmentSlots/appointmentSlotControls";
+import {createDateTimeline, STANDARD_DATE_FORMAT} from "../../lib/dates";
 
 
 interface Props {
@@ -19,14 +20,24 @@ const Counselling = ({availableAppointmentSlotsResults, setBookingForm, showModa
     const [selectedStartDate, setSelectedStartDate] = useState<Moment>(null);
     const [showCalendar, setShowCalendar] = useState<boolean>(true);
 
-    const formattedStartDate = (dateFormat: string) => selectedStartDate ? selectedStartDate.format(dateFormat) : '';
+    const formattedStartDate = (dateFormat: string = STANDARD_DATE_FORMAT) => selectedStartDate ? selectedStartDate.format(dateFormat) : '';
 
-    const onButtonDateChange = (direction: string) => {
+    const onButtonDateChange = (direction: string, callback: (changedDateStr: string) => void) => {
         setSelectedStartDate((date) => {
             const clone = date.clone();
-            return direction === 'right' ? clone.add('7', 'd') : clone.subtract('7', 'd');
+            const newDate = direction === 'right' ? clone.add('7', 'd') : clone.subtract('7', 'd');
+            // callback(newDate.format(STANDARD_DATE_FORMAT));
+            return newDate;
         });
     };
+
+    const today = new Date();
+
+    const getMaxDate = useMemo((): Date | null => {
+        if(!availableAppointmentSlotsResults.data.length) return null;
+        const dates = availableAppointmentSlotsResults.data.map(availableAppointmentSlot => availableAppointmentSlot.date);
+        return new Date(dates.at(-1));
+    }, [availableAppointmentSlotsResults.data]);
 
     const handleCalendarDisplay = (action: string) => {
         if(action === 'reset') {
@@ -44,6 +55,8 @@ const Counselling = ({availableAppointmentSlotsResults, setBookingForm, showModa
                     setShowCalendar={setShowCalendar}
                     selectedStartDate={selectedStartDate}
                     setSelectedStartDate={setSelectedStartDate}
+                    minDate={today}
+                    maxDate={getMaxDate}
                 />
                 :
                 <>
@@ -53,6 +66,8 @@ const Counselling = ({availableAppointmentSlotsResults, setBookingForm, showModa
                                 formattedStartDate={formattedStartDate}
                                 onButtonDateChange={onButtonDateChange}
                                 handleCalendarDisplay={handleCalendarDisplay}
+                                minDate={today}
+                                maxDate={getMaxDate}
                             />
                             <AppointmentSlotDates
                                 items={availableAppointmentSlotsResults.data}
