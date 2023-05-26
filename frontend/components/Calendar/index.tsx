@@ -17,7 +17,9 @@ interface Props {
 }
 
 const Calendar = ({availableAppointmentSlotsResults, setShowCalendar, selectedStartDate, setSelectedStartDate, minDate, maxDate}: Props) => {
-    const getStartDate = (fallbackDate: Date = null) => selectedStartDate ? new Date(selectedStartDate.toString()) : fallbackDate;
+    const getStartDate = useMemo(() => selectedStartDate ? new Date(selectedStartDate.toString()) : minDate,
+        [selectedStartDate, minDate]
+    );
 
     const getMarkedDates = useMemo(() => {
         if(!availableAppointmentSlotsResults.data.length) return [];
@@ -43,11 +45,11 @@ const Calendar = ({availableAppointmentSlotsResults, setShowCalendar, selectedSt
             <Text variant='titleMedium'>Select a date for counselling</Text>
             <CalendarPicker
                 onDateChange={onCalendarDateChange}
-                selectedStartDate={getStartDate()}
+                selectedStartDate={getStartDate}
                 minDate={minDate}
                 maxDate={maxDate}
                 restrictMonthNavigation={true}
-                initialDate={getStartDate(minDate)}
+                initialDate={getStartDate}
                 disabledDates={getMarkedDates}
             />
             <Button disabled={!selectedStartDate} mode='contained' onPress={() => handleCalendarDisplay('show')}>Ok</Button>

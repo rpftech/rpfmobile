@@ -31,7 +31,7 @@ const Counselling = ({availableAppointmentSlotsResults, setBookingForm, showModa
         });
     };
 
-    const today = new Date();
+    const today = new Date(availableAppointmentSlotsResults.data.at(1).date);
 
     const getMaxDate = useMemo((): Date | null => {
         if(!availableAppointmentSlotsResults.data.length) return null;
