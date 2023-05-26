@@ -18,7 +18,7 @@ const bookingFormSuccess = ({bookingForm, handlePostBookHandling}: Props) => {
             <Text variant="bodyMedium">
                 Your appointment is scheduled for:
             </Text>
-            <Text style={styles.appointmentText}>{formatDate(bookingForm.startTime)}</Text>
+            <Text style={styles.appointmentText}>{formatDate(new Date(bookingForm.startTime))}</Text>
             <Button mode='elevated' onPress={handlePostBookHandling}>Ok</Button>
         </View>
     );

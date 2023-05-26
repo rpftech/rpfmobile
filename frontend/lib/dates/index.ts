@@ -3,19 +3,11 @@ import {MarkedAppointmentSlot} from '../../services/data/appointmentSlots/types'
 
 export const STANDARD_DATE_FORMAT = 'YYYY-MM-DD';
 
-export const getDateFromString = (date: string): string => {
-    return convertDateToString(new Date(date));
-};
-
-// export const getDateFromDateObj = (date: Date): string => {
-//     return date.toISOString().split('T')[0];
-// };
-
-export const convertDateToString = (date: Date): string => {
+export const getDateFromString = (date: Date): string => {
     return date.toISOString().split('T')[0];
 };
 
-export const formatDate = (date: string): string => {
+export const formatDate = (date: Date): string => {
     const dateOptions: Intl.DateTimeFormatOptions = {
         weekday: "long",
         year: "numeric",
@@ -27,47 +19,47 @@ export const formatDate = (date: string): string => {
         minute: "numeric",
         hour12: false
     };
-    const dateObj = new Date(date);
-    const formattedDate = new Intl.DateTimeFormat("en-GB", dateOptions).format(dateObj);
-    const formattedTime = new Intl.DateTimeFormat("en-GB", timeOptions).format(dateObj);
+    const formattedDate = new Intl.DateTimeFormat("en-GB", dateOptions).format(date);
+    const formattedTime = new Intl.DateTimeFormat("en-GB", timeOptions).format(date);
     return `${formattedDate}, ${formattedTime}`;
 }
 
-export const datesMatch = (date1: string, date2: string): boolean => {
-    return new Date(getDateFromString(date1)).getTime() === new Date(getDateFromString(date2)).getTime()
+export const datesMatch = (date1: Date, date2: Date): boolean => {
+    return getDateFromString(date1) === getDateFromString(date2);
 };
 
-export const getDateTimeRange = (startDate: string, endDate: string, dates: string[], markedDates: MarkedDate[] = []): MarkedDate[] => {
-    if(startDate === endDate) return markedDates;
-    if(dates.includes(startDate)) {
+export const getDateTimeRange = (startDate: Date, endDate: Date, dates: Date[], markedDates: MarkedDate[] = []): MarkedDate[] => {
+    if(datesMatch(startDate, endDate)) return markedDates;
+    const dateExists = dates.some(date => datesMatch(date, startDate));
+    if(dateExists) {
         const startDateObj = new Date(startDate);
         startDateObj.setDate(startDateObj.getDate() + 1);
         const editedMarkedDates = [
             ...markedDates,
             {
-                date: startDate,
+                date: getDateFromString(startDate),
                 disabled: false
             }
         ];
-        return getDateTimeRange(getDateFromString(startDateObj.toISOString()), endDate, dates, editedMarkedDates);
+        return getDateTimeRange(startDateObj, endDate, dates, editedMarkedDates);
     };
     const startDateObj = new Date(startDate);
     const editedMarkedDates = [
         ...markedDates,
         {
-            date: getDateFromString(startDateObj.toISOString()),
+            date: getDateFromString(startDate),
             disabled: true
         }
     ]
     startDateObj.setDate(startDateObj.getDate() + 1);
-    return getDateTimeRange(getDateFromString(startDateObj.toISOString()), endDate, dates, editedMarkedDates);
+    return getDateTimeRange(startDateObj, endDate, dates, editedMarkedDates);
 };
 
 export const createDateTimeline = (availableAppointmentSlots: MarkedAppointmentSlot[]): MarkedDate[] => {
-    const startDate = getDateFromString(new Date().toISOString());
+    const startDate = new Date();
     const endSlot = availableAppointmentSlots.at(-1);
-    const dates = availableAppointmentSlots.map(availableAppointmentSlot => availableAppointmentSlot.date);
-    return getDateTimeRange(startDate, endSlot.date, dates);
+    const dates = availableAppointmentSlots.map(availableAppointmentSlot => new Date(availableAppointmentSlot.date));
+    return getDateTimeRange(startDate, new Date(endSlot.date), dates);
 };
 
 // const getFutureDateByYear = (date: Date, time: number): Date => {

@@ -1,8 +1,8 @@
 import {MarkedAppointmentSlot} from "./types";
 import Calendar from "../../api/calendar";
-import {convertDateToString, datesMatch, formatDate, getDateFromString, getFutureDate} from "../../../lib/dates";
+import {datesMatch, formatDate, getDateFromString, getFutureDate} from "../../../lib/dates";
 
-const FUTURE_DATE = convertDateToString(getFutureDate({ month: 3 }));
+const FUTURE_DATE = getDateFromString(getFutureDate({ month: 3 }));
 
 export const getAvailableAppointmentSlots = async(): Promise<MarkedAppointmentSlot[]> => {
     const results = await Promise.all([
@@ -13,7 +13,7 @@ export const getAvailableAppointmentSlots = async(): Promise<MarkedAppointmentSl
     if('error' in appointments) return [];
     const noActiveBookings = 'error' in activeBookings;
     const editedAppointments =  appointments.reduce<MarkedAppointmentSlot[]>((allAppointments, currAppointment) => {
-        const currAppointmentDate = getDateFromString(currAppointment.slot.timestamp);
+        const currAppointmentDate = getDateFromString(new Date(currAppointment.slot.timestamp));
         if(!allAppointments.length) return [
             ...allAppointments,
             {
@@ -46,16 +46,18 @@ export const getAvailableAppointmentSlots = async(): Promise<MarkedAppointmentSl
     }, []);
     if(noActiveBookings) return [];
     return activeBookings.reduce<MarkedAppointmentSlot[]>((allAppointmentsAndBookings, currBooking) => {
-        const groupedAppointmentSlot = allAppointmentsAndBookings.find(slot => datesMatch(currBooking.booking.booked_from, slot.date));
+        const groupedAppointmentSlot = allAppointmentsAndBookings.find(slot =>
+            datesMatch(new Date(currBooking.booking.booked_from), new Date(slot.date))
+        );
         if (!groupedAppointmentSlot) return [
             ...allAppointmentsAndBookings,
             {
-                date: getDateFromString(currBooking.booking.booked_from),
+                date: getDateFromString(new Date(currBooking.booking.booked_from)),
                 data: [{
                     timestamp: currBooking.booking.booked_from,
                     timestamp_end: currBooking.booking.booked_to,
-                    formatted_timestamp: formatDate(currBooking.booking.booked_from),
-                    formatted_timestamp_end: formatDate(currBooking.booking.booked_to),
+                    formatted_timestamp: formatDate(new Date(currBooking.booking.booked_from)),
+                    formatted_timestamp_end: formatDate(new Date(currBooking.booking.booked_to)),
                     available: false
                 }]
             }
@@ -63,12 +65,14 @@ export const getAvailableAppointmentSlots = async(): Promise<MarkedAppointmentSl
         groupedAppointmentSlot.data.push({
             timestamp: currBooking.booking.booked_from,
             timestamp_end: currBooking.booking.booked_to,
-            formatted_timestamp: formatDate(currBooking.booking.booked_from),
-            formatted_timestamp_end: formatDate(currBooking.booking.booked_to),
+            formatted_timestamp: formatDate(new Date(currBooking.booking.booked_from)),
+            formatted_timestamp_end: formatDate(new Date(currBooking.booking.booked_to)),
             available: false
         });
         return [
-            ...allAppointmentsAndBookings.filter(slot => !datesMatch(currBooking.booking.booked_from, slot.date)),
+            ...allAppointmentsAndBookings.filter(
+                slot => !datesMatch(new Date(currBooking.booking.booked_from), new Date(slot.date))
+            ),
             groupedAppointmentSlot
         ]
     }, editedAppointments)
